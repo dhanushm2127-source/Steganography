@@ -20,8 +20,8 @@ typedef struct _EncodeInfo
     char *src_image_fname;
     FILE *fptr_src_image;
     uint image_capacity;
-    uint bits_per_pixel;
-    char image_data[MAX_IMAGE_BUF_SIZE];
+    //uint bits_per_pixel;
+    //char image_data[MAX_IMAGE_BUF_SIZE];
 
     /* Secret File Info */
     char *secret_fname;

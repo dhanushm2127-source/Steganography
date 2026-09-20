@@ -76,78 +76,106 @@ Status open_files(EncodeInfo *encInfo)
 
 Status read_and_validate_encode_args(char *argv[], EncodeInfo *encInfo)
 {
-    /*
-    Check argv[2] have ".bmp" as last 4 char
-        If not, Print error message and return e_failure(enum)
-    encInfo -> src_image_fname = argv[2]  
+    char *dot = strrchr(argv[2], '.');
+    if(dot == NULL || strcmp(dot, ".bmp") != 0)
+    {
+        printf("Error extension must be '.bmp' only\n");
+        return e_failure;
+    }
+    encInfo -> src_image_fname = argv[2]; 
     
-    encInfo -> secret_fname = argv[3]
+    encInfo -> secret_fname = argv[3];
 
-    Check argv[4] == NULL
-        encInfo -> stego_image_fname = "output.bmp"
+    //Check argv[4] == NULL
+    if(argv[4] == NULL)
+    {
+        encInfo -> stego_image_fname = "output.bmp";
+    }
     else
-        * valide argv[4] is "".bmp"
-            -> if not, print error msg, return e_failure
-        * enInfo -> stego_image_fname = argv[4]
-
-    -> Call open_files(encInfo) == e_failure (easy to find)
-        return e_failure
-
-    return e_success
-    */
+    {
+        char *out = strrchr(argv[4], '.');
+        //Validate last 4 character is ".bmp" or not
+        if(out == NULL || strcmp(out, ".bmp") != 0)
+        {
+            printf("Error extension must be '.bmp' only\n");
+            return e_failure;
+        }
+        encInfo -> stego_image_fname = argv[4];
+    }
+    // Call open_files(encInfo)
+    if(open_files(encInfo) == e_failure)
+    {
+        printf("Error extension must be '.bmp' only\n");
+        return e_failure;
+    }
+    return e_success;
 }
 
 Status open_files(EncodeInfo *encInfo)
 {
-    /*
-        -> open 'encInfo -> src_image_fname' file in read 'r' mode
-        validate file is opening  or not
-            * If ret value is NULL, print error msg, return e_failure
-            fptr_src_image = fopen()
+    //Open source file in read 'r' mode
+    encInfo -> fptr_src_image = fopen(encInfo -> src_image_fname, "r");
+    //Validate file is opening  or not
+    if(encInfo -> fptr_src_image == NULL)
+    {
+        printf("Source file is not opened.\n");
+        return e_failure;
+    } 
 
-        -> open 'encInfo -> secret_fname' file in read 'r' mode
-        validate file is opening  or not
-            * If ret value is NULL, print error msg, return e_failure
-            fptr_secret = fopen()
+    //Open secret file in read 'r' mode
+    encInfo -> fptr_secret = fopen(encInfo -> secret_fname, "r");
+    //Validate file is opening  or not
+    if(encInfo -> fptr_secret == NULL)
+    {
+        printf("Secret file is not opened.\n");
+        return e_failure;
+    }
 
-        -> open 'encInfo -> stego_image_fname' file in read 'r' mode
-        validate file is opening  or not
-            * If ret value is NULL, print error msg, return e_failure
-            fptr_stego_image = fopen()
-
-        return e_success
-    */
+    //Open output file in read 'r' mode
+    encInfo -> fptr_stego_image = fopen(encInfo -> stego_image_fname, "r");
+    //Validate file is opening  or not
+    if(encInfo -> fptr_stego_image == NULL)
+    {
+        printf("Output file is not opened.\n");
+        return e_failure;
+    }
+    printf("File is opened successfully\n");
+    return e_success;
 }
 
 Status do_encoding(EncodeInfo *encInfo)
 {
     /*
-        Call check_capacity(encInfo) == e_failure
-            print error msg, return e_failure
-
         Call copy_bmp_header(FILE *fptr_src_image, FILE *fptr_dest_image) == e_failure
             print error msg, return e_failure
 
         Call encode_magic_string(const char *magic_string, EncodeInfo *encInfo) == e_failure
             print error msg, return e_failure
-
-
     */
+
+
+    //Call check_capacity(encInfo) == e_failure
+    if(encInfo -> image_capacity == e_failure)
+    {
+        printf("Error.... Insufficient image capacity\n");
+        return e_failure;
+    }
 }
 
 Status check_capacity(EncodeInfo *encInfo)
 {
-    /*
-        -> Call get_image_size_of_bmp(encode -> fptr_src_image)
-            image_capacity = get_image_size(encode -> fptr_secret)
-        -> Call get file size(encode -> fptr_secret)
-            size_secret_file = get_file_size()
+    //Get image capacity
+    encInfo -> image_capacity = get_image_size_of_bmp(encInfo -> fptr_src_image);
 
-        -> Check ((14 + size_secret_file) * 8) > image_capacity
-            return e_failure
+    //Get secret file size
+    encInfo -> size_secret_file = get_file_size(encInfo -> fptr_secret);
 
-        return e_success
-    */
+    //Check ((14 + size_secret_file) * 8) > image_capacity
+    if(((14 + encInfo -> size_secret_file) * 8) > encInfo -> image_capacity)
+    {
+        return e_failure;
+    }
+    return e_success;
 }
 
 uint get_file_size(FILE *fptr)
