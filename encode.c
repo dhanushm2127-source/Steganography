@@ -291,7 +291,7 @@ Status encode_byte_to_lsb(char data, char *image_buffer)
         else
         {
             //If clear, Clear the LSB of image_buffer[]
-            image_buffer[7 - i] = image_buffer[7 - i] & (~1); 
+            image_buffer[7 - i] = image_buffer[7 - i] & ~1; 
         }
     }
     return e_success;
@@ -336,7 +336,7 @@ Status encode_size_to_lsb(int size,char *Image_buff)
         else
         {
             //clear the LSB of image_buffer[] 
-            Image_buff[31 - i] = Image_buff[31 - i] & (~1);
+            Image_buff[31 - i] = Image_buff[31 - i] & ~1;
         }
     }
     return e_success;
@@ -375,7 +375,8 @@ Status encode_secret_file_data(EncodeInfo *encInfo)
 {
     //Declare the buffer[8], data
     char buffer[8];
-    char data;
+    unsigned char data;
+    rewind(encInfo -> fptr_secret);
     //Loop till EOF of secret_file
     while(fread(&data, 1, 1,encInfo -> fptr_secret) == 1)
     {
@@ -394,12 +395,12 @@ Status copy_remaining_img_data(FILE *fptr_src, FILE *fptr_dest)
 {
     
     //Declare a char as data
-    char data;
+    unsigned char data;
 
     //Loop till EOF of src_file and Read a char from src_file
     while(fread(&data, 1, 1, fptr_src) == 1)
     {
-        //Write thebdata to dest_file
+        //Write the data to dest_file
         fwrite(&data, 1, 1, fptr_dest);
     }
     printf("The remaining image data is copied successfully\n");     
