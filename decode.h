@@ -1,6 +1,6 @@
 #ifndef DECODE_H
 #define DECODE_H
-#include<stdio.h>
+
 #include "types.h" // Contains user defined types
 
 /* 
@@ -14,7 +14,7 @@
 #define MAX_IMAGE_BUF_SIZE (MAX_SECRET_BUF_SIZE * 8)
 #define MAX_FILE_SUFFIX 4
 
-typedef struct _EncodeInfo
+typedef struct _DecodeInfo
 {
     /* Source Image info */
     char *src_image_fname;
@@ -34,7 +34,7 @@ typedef struct _EncodeInfo
     char *stego_image_fname;
     FILE *fptr_stego_image;
 
-} EncodeInfo;
+} DecodeInfo;
 
 
 /* Decoding function prototype */
@@ -43,34 +43,33 @@ typedef struct _EncodeInfo
 OperationType check_operation_type(char opt);
 
 /* Read and validate decode args from argv */
-Status read_and_validate_decode_args(char *argv[], EncodeInfo *encInfo);
+Status read_and_validate_decode_args(char *argv[], DecodeInfo *decInfo);
 
 /* Perform the decoding */
-Status do_decoding(EncodeInfo *encInfo);
+Status do_decoding(DecodeInfo *decInfo);
 
 /* Get File pointers for i/p and o/p files */
-Status open_decoded_files(EncodeInfo *encInfo);
+Status open_decoded_files(DecodeInfo *decInfo);
 
 /* Store Decoded Magic String */
-Status decode_magic_string(const char *magic_string, EncodeInfo *encInfo);
+Status decode_magic_string(const char *magic_string, DecodeInfo *decInfo);
 
 /* Decode secret file extenstion size*/
-Status decode_secret_file_extn_size(EncodeInfo *encInfo);
+Status decode_secret_file_extn_size(DecodeInfo *decInfo);
 
 /* Decode secret file extenstion */
-Status decode_secret_file_extn(const char *file_extn, EncodeInfo *encInfo);
+Status decode_secret_file_extn(DecodeInfo *decInfo);
 
 /* Decode secret file size */
-Status decode_secret_file_size(int file_size, EncodeInfo *encInfo);
+Status decode_secret_file_size(DecodeInfo *decInfo);
 
 /* Decode secret file data*/
-Status decode_secret_file_data(EncodeInfo *encInfo);
+Status decode_secret_file_data(DecodeInfo *decInfo);
 
 /* Decode function, which does the real encoding */
-Status decode_size_from_lsb(int size, char *image_buffer);
+Status decode_size_from_lsb(int *data, char *image_buffer);
 
 /* decode a byte into LSB of image data array */
-Status decode_byte_from_lsb(char data, char *image_buffer);
-
+Status decode_byte_from_lsb(unsigned char *data, char *image_buffer);
 
 #endif

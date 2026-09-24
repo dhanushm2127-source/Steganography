@@ -172,7 +172,7 @@ Status do_encoding(EncodeInfo *encInfo)
         return e_failure;
     }
 
-    //Call encode_magic_string(const char *magic_string, EncodeInfo *encInfo) == e_failure
+    //Call encode_magic_string
     if(encode_magic_string(MAGIC_STRING, encInfo) == e_failure)
     {
         printf("Error.... Unable to encode the magic string\n");
@@ -189,14 +189,14 @@ Status do_encoding(EncodeInfo *encInfo)
     //Call encode secret file extension
     if(encode_secret_file_extn(encInfo -> extn_secret_file, encInfo) == e_failure)
     {
-        printf("Error.... Unable to copy the BMP headerencode the secret file extention\n");
+        printf("Error.... Unable to encode the secret file extention\n");
         return e_failure;
     }
 
     //Call encode secret file size
     if(encode_secret_file_size(encInfo -> size_secret_file, encInfo) == e_failure)
     {
-        printf("Error.... Unable to copy the BMP headerencode secret file size\n");
+        printf("Error.... Unable to encode secret file size\n");
         return e_failure;
     }
 
@@ -387,7 +387,7 @@ Status encode_secret_file_data(EncodeInfo *encInfo)
         //write 8 bytes to output file
         fwrite(buffer, 8, 1, encInfo -> fptr_stego_image);
     }
-    printf("Secret file dat is encoded successfully\n");
+    printf("Secret file data is encoded successfully\n");
     return e_success;
 }
 
