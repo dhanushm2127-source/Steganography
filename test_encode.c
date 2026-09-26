@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        printf("Validation of encode is failed...\n");
+        printf("Validation is failed...\n");
         return 0;
     }
     return 0;
